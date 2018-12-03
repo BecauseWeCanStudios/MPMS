@@ -102,14 +102,14 @@ namespace mtms {
                 _mutex.unlock();
                 for (size_t i = p.top.y; i < p.bottom.y; ++i)
                     for (size_t j = p.top.x; j < p.bottom.x; ++j) {
-                        auto pair = std::make_pair(h_func(j), w_func(i));
+                        auto pair = std::make_pair(w_func(j), h_func(i));
                         const auto c = pair;
                         size_t n = 0;
-                        while (modulus(pair) < 4 && n <= max_n) {
+                        while (modulus(pair) < 4 && n < max_n) {
                             pair = product(pair, c);
                             ++n;
                         }
-                        _data[i][j] = _colors[n % _colors.size()];
+                        _data[i][j] = _colors[n % max_n % _colors.size()];
                     }
             }
         }
@@ -149,7 +149,7 @@ namespace mtms {
             T s = 1;
             if (n >= 700)
                 s = 0.3 + 0.7 * (780 - n) / 80;
-            else if (n <= 420 && n >= 380)
+            else if (n <= 420)
                 s = 0.3 + 0.7 * (n - 380) / 40;
             return {std::pow(color.r * s, T(0.8)), std::pow(color.g * s, T(0.8)), std::pow(color.b * s, T(0.8))};
         }
