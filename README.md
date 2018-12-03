@@ -1,2 +1,2 @@
-# MPMS
-Multi Process Mandelbrot Set
+# MTMS
+Multi Threding Mandelbrot Set
