@@ -1,3 +1,4 @@
+#include <chrono>
 #include <string>
 #include <iostream>
 #include <algorithm>
@@ -33,7 +34,9 @@ int main(int argc, char* argv[]) {
         return 0;
     }
     auto m = mtms::mandelbrot_set<double>(width, height, n_colors);
+    const auto start = std::chrono::high_resolution_clock::now();
     m.run(n_threads, nx, ny, scale * std::max(3. / width, 2. / height), {cx, cy}, max_n);
+    const auto run_end = std::chrono::high_resolution_clock::now();
     pngwriter png(static_cast<int>(width), static_cast<int>(height), 0, out_file.c_str());
     for (size_t i = 0; i < height; ++i)
         for (size_t j = 0; j < width; ++j) {
@@ -41,5 +44,12 @@ int main(int argc, char* argv[]) {
             png.plot(static_cast<int>(j), static_cast<int>(i), color.r, color.g, color.b);
         }
     png.close();
+    const auto write_end = std::chrono::high_resolution_clock::now();
+    std::cout << "Run time: "
+              << std::chrono::duration_cast<std::chrono::nanoseconds>(run_end - start).count() << " ns\n"
+              << "Write time : "
+              << std::chrono::duration_cast<std::chrono::nanoseconds>(write_end - run_end).count() << " ns\n"
+              << "All time: "
+              << std::chrono::duration_cast<std::chrono::nanoseconds>(write_end - start).count() << " ns" << std::endl;
     return 0;
 }
